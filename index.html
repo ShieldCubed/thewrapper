@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$PWRP — Privacy Basket Wrapper | Design + 3D Flow + NAV Simulator</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #131722;
+    --panel2: #1a1f2e;
+    --ink: #e8ecf3;
+    --muted: #8b94a7;
+    --accent: #6ee7ff;
+    --accent2: #a78bfa;
+    --good: #34d399;
+    --warn: #fbbf24;
+    --bad: #f87171;
+    --xmr: #ff6600;
+    --zec: #f4b728;
+    --dash: #008ce7;
+    --line: #232a3a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55; }
+  a { color: var(--accent); }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre { background: #0f1320; border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px; overflow-x: auto; font-size: 13px; }
+  h1, h2, h3, h4 { font-weight: 650; letter-spacing: -0.01em; }
+  h1 { font-size: 28px; margin: 0 0 6px; }
+  h2 { font-size: 20px; margin: 28px 0 10px; color: var(--accent); }
+  h3 { font-size: 16px; margin: 18px 0 8px; }
+  h4 { font-size: 14px; margin: 12px 0 6px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 22px; padding: 0; }
+  li { margin: 3px 0; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px; }
+  .hero { padding: 32px 24px; background: linear-gradient(135deg, #141a2a 0%, #0e1220 100%);
+    border: 1px solid var(--line); border-radius: 16px; margin-bottom: 24px; }
+  .hero .badge { display: inline-block; background: rgba(110,231,255,0.12);
+    color: var(--accent); border: 1px solid rgba(110,231,255,0.35);
+    padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.04em; margin-bottom: 12px; }
+  .hero p { color: var(--muted); max-width: 760px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px; }
+  .card h3 { margin-top: 0; }
+  .card .metric { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .card .label { font-size: 12px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.05em; }
+  .chip { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px;
+    font-weight: 600; }
+  .chip-xmr { background: rgba(255,102,0,0.15); color: var(--xmr); }
+  .chip-zec { background: rgba(244,183,40,0.15); color: var(--zec); }
+  .chip-dash{ background: rgba(0,140,231,0.15); color: var(--dash); }
+  .chip-pwrp{ background: rgba(110,231,255,0.15); color: var(--accent); }
+  .nav-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line);
+    margin: 24px 0 20px; overflow-x: auto; }
+  .nav-tabs button { background: transparent; color: var(--muted); border: none;
+    padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 2px solid transparent;
+    white-space: nowrap; }
+  .nav-tabs button.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  canvas { display: block; width: 100%; border-radius: 12px; background: #0a0e18; }
+  #flow3d { height: 520px; }
+  .sim-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 720px) { .sim-controls { grid-template-columns: 1fr; } }
+  .slider { display: flex; flex-direction: column; gap: 4px; }
+  .slider label { font-size: 13px; color: var(--muted); display: flex;
+    justify-content: space-between; }
+  .slider input[type=range] { width: 100%; accent-color: var(--accent); }
+  .sim-output { font-family: ui-monospace, monospace; font-size: 13px;
+    background: var(--panel2); border-radius: 8px; padding: 12px; }
+  .sim-output div { display: flex; justify-content: space-between; padding: 3px 0; }
+  .sim-output .key { color: var(--muted); }
+  .sim-output .val { color: var(--ink); font-weight: 600; }
+  .sim-output .big { font-size: 18px; color: var(--accent); }
+  .bar { height: 8px; background: #1e2536; border-radius: 4px; overflow: hidden;
+    display: flex; margin-top: 4px; }
+  .bar span { display: block; height: 100%; }
+  .tag { font-size: 11px; background: #1e2536; color: var(--muted); padding: 2px 6px;
+    border-radius: 4px; margin-left: 4px; }
+  .note { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 8px; padding: 12px; font-size: 14px; color: #fde68a; }
+  .ok { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.3);
+    border-radius: 8px; padding: 12px; font-size: 14px; color: #a7f3d0; }
+  .bad { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 8px; padding: 12px; font-size: 14px; color: #fecaca; }
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 14px; margin: 8px 0; }
+  details summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  .footer { color: var(--muted); font-size: 13px; text-align: center; margin-top: 40px; }
+  .log { font-family: ui-monospace, monospace; font-size: 12px; background: #0f1320;
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px; height: 160px;
+    overflow-y: auto; }
+  .log .t { color: var(--muted); }
+  .log .e { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="badge">DESIGN DOCUMENT · INTERACTIVE</span>
+    <h1>$PWRP — Privacy Basket Wrapper Token</h1>
+    <p>A 15,000,000-max-supply ERC-20 that wraps a weighted basket of
+      <span class="chip chip-xmr">XMR 35%</span>
+      <span class="chip chip-zec">ZEC 35%</span>
+      <span class="chip chip-dash">DASH 30%</span>
+      held in custodied reserves, with NAV-anchored minting, a FIFO redemption queue,
+      bounded rebalancing, 2-of-3 attestation, a sanctions gate, and a 48h timelock.
+      Price is derived from three Chainlink USD feeds, not from a DEX pool.
+    </p>
+  </div>
+
+  <!-- TABS -->
+  <div class="nav-tabs" id="tabs">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="flow3d">3D Value Flow</button>
+    <button data-tab="sim">NAV Simulator</button>
+    <button data-tab="oracle">Chainlink Pricing</button>
+    <button data-tab="contracts">Contracts</button>
+    <button data-tab="lifecycle">Lifecycle</button>
+    <button data-tab="risks">Risks</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="tab-panel active" id="tab-overview">
+    <div class="grid3">
+      <div class="card">
+        <div class="label">Max Supply</div>
+        <div class="metric">15,000,000 PWRP</div>
+        <div class="muted" style="color:var(--muted);font-size:13px">
+          Hard cap enforced in <code>mint()</code>. 18 decimals, 1.5e25 wei.
+        </div>
+      </div>
+      <div class="card">
+        <div class="label">Target Weights</div>
+        <div class="metric">35 / 35 / 30</div>
+        <div class="bar">
+          <span style="width:35%;background:var(--xmr)"></span>
+          <span style="width:35%;background:var(--zec)"></span>
+          <span style="width:30%;background:var(--dash)"></span>
+        </div>
+        <div style="color:var(--muted);font-size:12px;margin-top:6px">
+          XMR · ZEC · DASH, tolerance ±200 bps
+        </div>
+      </div>
+      <div class="card">
+        <div class="label">Pricing</div>
+        <div class="metric">NAV = TVL / Supply</div>
+        <div style="color:var(--muted);font-size:13px">
+          No DEX pool is the price. NAV is computed on-chain from three
+          Chainlink USD feeds × reported reserves.
+        </div>
+      </div>
+    </div>
+
+    <h2>What $PWRP is — and is not</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>It <em>is</em></h3>
+        <ul>
+          <li>An ERC-20 with a <strong>hard 15M cap</strong>.</li>
+          <li>A claim on a <strong>custodied basket</strong> of native XMR/ZEC/DASH.</li>
+          <li>Priced by <strong>on-chain NAV</strong> from Chainlink feeds.</li>
+          <li>Mint/burn gated by <strong>2-of-3 signed reserve reports</strong>.</li>
+          <li>Upgradeable only through a <strong>48h timelock</strong>.</li>
+          <li>Pausable in seconds by a <strong>3-of-5 multisig</strong>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>It is <em>not</em></h3>
+        <ul>
+          <li>Trustless. No cryptographic bridge exists from Monero/Zcash/Dash to EVM.</li>
+          <li>Private. Holding PWRP is fully transparent on-chain.</li>
+          <li>Free-floating. The price cannot be pumped by a thin DEX pool —
+            it is NAV-anchored, but NAV itself depends on trusted reserves.</li>
+          <li>Regulatorily blessed. Privacy coins face listing and AML scrutiny
+            in many jurisdictions.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Four trust pillars</h2>
+    <table>
+      <tr><th>Pillar</th><th>Mechanism</th><th>Failure mode if broken</th></tr>
+      <tr><td>Custody</td><td>Off-chain vaults holding XMR/ZEC/DASH</td>
+          <td>Reserves ≠ reported → NAV overstates → mint is theft</td></tr>
+      <tr><td>Attestation</td><td>2-of-3 EIP-712 signatures (custodian + auditor)</td>
+          <td>Collusion of 2 keys → fake reserves accepted</td></tr>
+      <tr><td>Governance</td><td>48h timelock, 4-of-5 multisig</td>
+          <td>Compromised multisig → arbitrary upgrade</td></tr>
+      <tr><td>Compliance</td><td>Sanctions oracle + optional allowlist</td>
+          <td>Stale oracle → mint halts; sanctioned transfer → frozen redemption</td></tr>
+    </table>
+  </div>
+
+  <!-- 3D FLOW -->
+  <div class="tab-panel" id="tab-flow3d">
+    <h2>3D value-flow visualization</h2>
+    <p style="color:var(--muted)">
+      Drag to orbit. Scroll to zoom. Watch how coins enter the custodian vaults, get attested,
+      update the on-chain NAV, and propagate to $PWRP price.
+    </p>
+    <canvas id="flow3d"></canvas>
+    <div class="grid3" style="margin-top:16px">
+      <div class="card">
+        <div class="label">Layer 0 · Source coins</div>
+        <div style="font-size:13px;color:var(--muted)">
+          Native XMR, ZEC, DASH live on their own chains. They <em>cannot</em> be read by Ethereum.
+        </div>
+      </div>
+      <div class="card">
+        <div class="label">Layer 1 · Custody + attestation</div>
+        <div style="font-size:13px;color:var(--muted)">
+          Off-chain vaults sign a reserve report; 2-of-3 threshold required.
+        </div>
+      </div>
+      <div class="card">
+        <div class="label">Layer 2 · On-chain pricing</div>
+        <div style="font-size:13px;color:var(--muted)">
+          Chainlink USD feeds × reported reserves → NAV. $PWRP mint/burn follows NAV.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIMULATOR -->
+  <div class="tab-panel" id="tab-sim">
+    <h2>NAV simulator</h2>
+    <p style="color:var(--muted)">
+      Adjust reserves, prices, and NAV inputs. The simulator mirrors the on-chain math:
+      <code>NAV = Σ(reserve_i × price_i) / totalSupply</code>, and mint/burn follow NAV.
+    </p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Inputs</h3>
+        <div class="sim-controls">
+          <div class="slider">
+            <label><span>XMR reserve</span><span id="v-xmr">100.00</span></label>
+            <input type="range" id="i-xmr" min="0" max="500" step="1" value="100" />
+          </div>
+          <div class="slider">
+            <label><span>XMR price (USD)</span><span id="v-xmrP">160.00</span></label>
+            <input type="range" id="i-xmrP" min="20" max="800" step="1" value="160" />
+          </div>
+          <div class="slider">
+            <label><span>ZEC reserve</span><span id="v-zec">100.00</span></label>
+            <input type="range" id="i-zec" min="0" max="500" step="1" value="100" />
+          </div>
+          <div class="slider">
+            <label><span>ZEC price (USD)</span><span id="v-zecP">30.00</span></label>
+            <input type="range" id="i-zecP" min="5" max="300" step="1" value="30" />
+          </div>
+          <div class="slider">
+            <label><span>DASH reserve</span><span id="v-dash">90.00</span></label>
+            <input type="range" id="i-dash" min="0" max="500" step="1" value="90" />
+          </div>
+          <div class="slider">
+            <label><span>DASH price (USD)</span><span id="v-dashP">25.00</span></label>
+            <input type="range" id="i-dashP" min="5" max="200" step="1" value="25" />
+          </div>
+          <div class="slider">
+            <label><span>PWRP supply</span><span id="v-sup">141.67</span></label>
+            <input type="range" id="i-sup" min="1" max="15000000" step="1" value="141" />
+          </div>
+          <div class="slider">
+            <label><span>Initial NAV (seed)</span><span id="v-seed">150.00</span></label>
+            <input type="range" id="i-seed" min="10" max="500" step="1" value="150" />
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Live output</h3>
+        <div class="sim-output">
+          <div><span class="key">XMR value</span><span class="val" id="o-xmr">$0</span></div>
+          <div><span class="key">ZEC value</span><span class="val" id="o-zec">$0</span></div>
+          <div><span class="key">DASH value</span><span class="val" id="o-dash">$0</span></div>
+          <div style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px">
+            <span class="key">Total basket value</span><span class="val" id="o-tvl">$0</span>
+          </div>
+          <div><span class="key">On-chain supply</span><span class="val" id="o-sup">0</span></div>
+          <div><span class="key">NAV per PWRP</span><span class="val big" id="o-nav">$0</span></div>
+          <div><span class="key">Actual weights</span><span class="val" id="o-w">— / — / —</span></div>
+          <div class="bar" id="o-bar" style="margin-top:6px">
+            <span id="o-bar-xmr" style="background:var(--xmr)"></span>
+            <span id="o-bar-zec" style="background:var(--zec)"></span>
+            <span id="o-bar-dash" style="background:var(--dash)"></span>
+          </div>
+          <div><span class="key">Drift vs 35/35/30</span><span class="val" id="o-drift">—</span></div>
+          <div><span class="key">Drift status</span><span class="val" id="o-status">—</span></div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="sim-output">
+            <div><span class="key">Deposit $1,000 → mint</span><span class="val" id="o-mint">0 PWRP</span></div>
+            <div><span class="key">Burn 1 PWRP → receive</span><span class="val" id="o-burn">$0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Simulation log</h3>
+      <div class="log" id="sim-log"></div>
+    </div>
+
+    <div class="note" style="margin-top:16px">
+      <strong>Simulator note:</strong> the real contract reads Chainlink feeds; here you
+      move the prices by hand. The math is identical — only the source of the price differs.
+    </div>
+  </div>
+
+  <!-- ORACLE -->
+  <div class="tab-panel" id="tab-oracle">
+    <h2>How Chainlink feeds price $PWRP</h2>
+    <p style="color:var(--muted)">
+      $PWRP has no DEX pool as its source of truth. Its price is the on-chain NAV,
+      and NAV is computed from three Chainlink USD feeds multiplied by reported reserves.
+    </p>
+    <div class="card">
+      <h3>Price pipeline</h3>
+<pre>
+  Chainlink XMR/USD  ─┐
+  Chainlink ZEC/USD  ─┼──▶  reserve_i × price_i  ──▶  totalBasketValue()  ──▶  NAV = TVL / supply
+  Chainlink DASH/USD ─┘
+                                                  ▲
+                                                  │
+                                   reportReserveAttested(symbol, reserve)
+                                                  ▲
+                                                  │  (2-of-3 signatures)
+                                     custodian + auditor
+</pre>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Chainlink feed contract (AggregatorV3Interface)</h3>
+        <p>Each feed returns <code>latestRoundData()</code> with 8-decimal price. The
+        contract scales it to 18 decimals for math:</p>
+<pre>function _constituentValue(bytes32 symbol)
+    internal view returns (uint256)
+{
+    Constituent storage c = constituents[symbol];
+    (, int256 price, , , ) = c.feed.latestRoundData();
+    require(price > 0, "bad price");
+    uint256 price18 = uint256(price) * 1e10;   // 8 → 18 decimals
+    return (c.reserve * price18) / 1e18;
+}</pre>
+      </div>
+      <div class="card">
+        <h3>What changes the price?</h3>
+        <table>
+          <tr><th>Event</th><th>Effect on NAV</th></tr>
+          <tr><td>XMR price ↑</td><td>NAV ↑ (weighted 35%)</td></tr>
+          <tr><td>ZEC price ↑</td><td>NAV ↑ (weighted 35%)</td></tr>
+          <tr><td>DASH price ↑</td><td>NAV ↑ (weighted 30%)</td></tr>
+          <tr><td>New deposit minted at NAV</td><td>NAV ≈ unchanged</td></tr>
+          <tr><td>Burn at NAV</td><td>NAV ≈ unchanged</td></tr>
+          <tr><td>Rebalance within tolerance</td><td>NAV ≈ unchanged (±slippage)</td></tr>
+          <tr><td>Fake reserve report</td><td>NAV artificially ↑ (attack)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <h2>What happens on a price move — worked example</h2>
+    <div class="card">
+<pre>
+Initial state:
+  XMR reserve = 100   XMR price = $160   → $16,000
+  ZEC reserve = 100   ZEC price = $30    → $3,000
+  DASH reserve = 90   DASH price = $25   → $2,250
+  Total basket value = $21,250
+  Supply = 141.666... PWRP
+  NAV = 21,250 / 141.666... = $150.00
+
+XMR rallies to $200 (+25%):
+  XMR value = 100 × 200 = $20,000
+  Total basket value = $25,250
+  NAV = 25,250 / 141.666... = $178.24   (+18.8%)
+  Actual weights now 79.2% / 11.9% / 8.9%
+  → drift from 35/35/30 = +44.2 / -23.1 / -21.1 bps → OUT OF TOLERANCE
+  → rebalance required within cooldown window
+
+Custodian sells ~28 XMR for ZEC + DASH (off-chain):
+  XMR = 72, ZEC = 200, DASH = 180
+  XMR value = $14,400, ZEC = $6,000, DASH = $4,500 → total $24,900
+  Weights = 57.8% / 24.1% / 18.1%  → still off target
+  (Deeper rebalance needed; illustrative only.)
+</pre>
+    </div>
+  </div>
+
+  <!-- CONTRACTS -->
+  <div class="tab-panel" id="tab-contracts">
+    <h2>Contract inventory</h2>
+    <table>
+      <tr><th>Contract</th><th>Role</th><th>Trust</th></tr>
+      <tr><td><code>BasketVault</code> (UUPS)</td>
+          <td>ERC-20 + NAV math + cap</td>
+          <td>Upgradeable by 4-of-5 timelock</td></tr>
+      <tr><td><code>RedemptionQueue</code></td>
+          <td>FIFO exit at NAV snapshot</td>
+          <td>Custodian settles, holder can timeout-refund</td></tr>
+      <tr><td><code>RebalanceModule</code></td>
+          <td>Tolerance + slippage + cooldown</td>
+          <td>Owner tunes params; custodian proposes</td></tr>
+      <tr><td><code>ReserveAttestation</code></td>
+          <td>2-of-3 EIP-712 signed reports</td>
+          <td>Custodian + auditor keys</td></tr>
+      <tr><td><code>ComplianceGate</code></td>
+          <td>Sanctions oracle + allowlist</td>
+          <td>Oracle trust + owner policy</td></tr>
+      <tr><td><code>TimelockController</code></td>
+          <td>48h delay on parameter/upgrade</td>
+          <td>4-of-5 multisig proposes</td></tr>
+      <tr><td>Pauser</td>
+          <td>Instant pause of mint/burn/settle</td>
+          <td>3-of-5 multisig</td></tr>
+    </table>
+
+    <h2>Key snippets</h2>
+    <details>
+      <summary>NAV math (NavMath.sol)</summary>
+<pre>function navPerToken(uint256 totalValue, uint256 totalSupply)
+    internal pure returns (uint256)
+{
+    if (totalSupply == 0) return 0;
+    return (totalValue * 1e18) / totalSupply;
+}
+
+function tokensForValue(uint256 depositValue, uint256 nav)
+    internal pure returns (uint256)
+{
+    require(nav > 0, "NavMath: zero nav");
+    return (depositValue * 1e18) / nav;
+}</pre>
+    </details>
+
+    <details>
+      <summary>Mint at live NAV (BasketVault.sol)</summary>
+<pre>function mint(
+    address to,
+    uint256 depositValueUSD,
+    string calldata ref
+) external onlyCustodian whenNotPaused returns (uint256 tokens) {
+    require(seeded, "not seeded");
+    uint256 nav = navPerToken();
+    require(nav > 0, "nav=0");
+    tokens = NavMath.tokensForValue(depositValueUSD, nav);
+    require(tokens > 0, "zero mint");
+    require(totalSupply() + tokens &lt;= MAX_SUPPLY, "exceeds cap");
+    _mint(to, tokens);
+    emit Minted(to, tokens, depositValueUSD, ref);
+}</pre>
+    </details>
+
+    <details>
+      <summary>2-of-3 attestation (ReserveAttestation.sol)</summary>
+<pre>function verifyAndConsume(
+    Report calldata report,
+    bytes[] calldata signatures
+) external {
+    require(block.timestamp &lt;= report.deadline, "expired");
+    require(report.nonce &gt; lastNonce[report.symbol], "stale nonce");
+    require(signatures.length &gt;= threshold, "not enough sigs");
+    bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
+        REPORT_TYPEHASH, report.symbol, report.reserve,
+        report.nonce, report.deadline
+    )));
+    address[] memory seen = new address[](signatures.length);
+    uint256 valid = 0;
+    for (uint256 i = 0; i &lt; signatures.length; i++) {
+        address s = digest.recover(signatures[i]);
+        require(isSigner[s], "not a signer");
+        bool dup = false;
+        for (uint256 j = 0; j &lt; valid; j++) {
+            if (seen[j] == s) { dup = true; break; }
+        }
+        if (dup) continue;
+        seen[valid++] = s;
+    }
+    require(valid &gt;= threshold, "below threshold");
+    lastNonce[report.symbol] = report.nonce;
+    emit ReportConsumed(report.symbol, report.reserve, report.nonce);
+}</pre>
+    </details>
+
+    <details>
+      <summary>Redemption queue skip on sanctions</summary>
+<pre>if (!vault.compliance().isClean(r.holder)) {
+    emit SanctionedSkip(head, r.holder);
+    head++;
+    processed++;
+    continue;
+}</pre>
+    </details>
+  </div>
+
+  <!-- LIFECYCLE -->
+  <div class="tab-panel" id="tab-lifecycle">
+    <h2>End-to-end lifecycle</h2>
+
+    <h3>Phase A — Bootstrap (one-time)</h3>
+<pre>1. Custodian deposits seed basket off-chain:
+     100 XMR + 100 ZEC + 90 DASH
+2. Custodian + auditor co-sign reserve reports (2-of-3)
+3. Custodian calls reportReservesAttested([...])
+4. With XMR=$160, ZEC=$30, DASH=$25:
+     basketValue = $21,250
+5. seedMint(alice, "seed-1") with INITIAL_NAV = $150:
+     tokens = 21,250 / 150 = 141.666... PWRP
+6. seeded = true. NAV locked at $150.00.</pre>
+
+    <h3>Phase B — Minting</h3>
+<pre>1. Depositor sends 50 XMR off-chain ($8,000)
+2. Custodian reports updated XMR reserve
+3. Custodian calls mint(depositor, 8_000e18, "dep-42")
+4. Contract reads live NAV and mints 8,000 / NAV tokens
+5. Holder now has PWRP worth $8,000 at NAV</pre>
+
+    <h3>Phase C — Redemption</h3>
+<pre>1. Holder approves queue and calls requestRedemption(10 PWRP)
+2. Queue snapshots valueUSD = 10 × NAV, locks PWRP
+3. Custodian settles in settleBatch (batched, gas-capped)
+4. Queue burns PWRP; custodian releases coins off-chain
+5. If custodian stalls 7 days → emergencyRefund by holder</pre>
+
+    <h3>Phase D — Rebalance</h3>
+<pre>1. Custodian trades off-chain to restore weights
+2. Custodian calls proposeRebalance with post-trade reserves
+3. Contract checks: cooldown elapsed, weights within ±200 bps,
+   total value within [minBasketValue, maxBasketValue]
+4. Reserves updated; NAV recomputed on next read</pre>
+
+    <h3>Phase E — Incident</h3>
+<pre>1. Monitor detects anomaly
+2. 3-of-5 pauser calls pause() within minutes
+3. 4-of-5 multisig proposes upgrade via 48h timelock
+4. Holders exit during window if they object
+5. Upgrade executes; unpause via 3-of-5</pre>
+  </div>
+
+  <!-- RISKS -->
+  <div class="tab-panel" id="tab-risks">
+    <h2>What can go wrong</h2>
+    <div class="grid2">
+      <div class="bad">
+        <h4 style="color:var(--bad);margin-top:0">Custody failure</h4>
+        Reserves are not what the report says. NAV is inflated. Mint becomes theft
+        from existing holders. <em>Mitigation:</em> 2-of-3 attestation, physical audits,
+        insurance.
+      </div>
+      <div class="bad">
+        <h4 style="color:var(--bad);margin-top:0">Attestation collusion</h4>
+        Custodian + 1 auditor collude. Fake reserves accepted. <em>Mitigation:</em>
+        legal separation, independent entities, signer rotation.
+      </div>
+      <div class="bad">
+        <h4 style="color:var(--bad);margin-top:0">Oracle manipulation</h4>
+        Thin Chainlink feeds mispriced during rebalance. <em>Mitigation:</em>
+        staleness guard, TWAP fallback, tolerance checks.
+      </div>
+      <div class="bad">
+        <h4 style="color:var(--bad);margin-top:0">Governance compromise</h4>
+        4-of-5 multisig compromised → arbitrary upgrade. <em>Mitigation:</em>
+        48h timelock, public monitoring, signer hardware separation.
+      </div>
+      <div class="bad">
+        <h4 style="color:var(--bad);margin-top:0">Regulatory action</h4>
+        Privacy coins delisted or banned in a jurisdiction. <em>Mitigation:</em>
+        compliance gate, jurisdictional allowlist, legal opinion.
+      </div>
+      <div class="bad">
+        <h4 style="color:var(--bad);margin-top:0">Sanctions freeze</h4>
+        Holder becomes sanctioned between request and settlement. Queue skips
+        and freezes their PWRP. <em>Mitigation:</em> disclosed in terms.
+      </div>
+    </div>
+
+    <h2 style="margin-top:24px">The irreducible caveat</h2>
+    <div class="note">
+      No module removes the custody assumption. Monero, Zcash, and Dash are on
+      their own chains; an EVM contract cannot see them. The strongest claim this
+      design can make is: <em>two independent entities must collude, and a 48h public
+      window must be ignored by every holder, for a theft to succeed.</em>
+      That is the ceiling. There is no seventh module.
+    </div>
+  </div>
+
+  <div class="footer">
+    $PWRP design doc · 15M cap · 35/35/30 · NAV-anchored · 2-of-3 attested ·
+    48h timelock · 3D flow + simulator<br/>
+    This is a design artifact, not financial advice. Do not deploy without an audit.
+  </div>
+</div>
+
+<!-- THREE.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ─────────────────────────── Tabs ─────────────────────────── */
+(function() {
+  const tabs = document.getElementById('tabs');
+  tabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    document.querySelectorAll('#tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'flow3d') { initFlow(); }
+  });
+})();
+
+/* ─────────────────────────── Simulator ─────────────────────────── */
+(function() {
+  const $ = id => document.getElementById(id);
+  const inputs = ['xmr','xmrP','zec','zecP','dash','dashP','sup','seed'];
+  const out = {
+    xmr: $('o-xmr'), zec: $('o-zec'), dash: $('o-dash'),
+    tvl: $('o-tvl'), sup: $('o-sup'), nav: $('o-nav'),
+    w: $('o-w'), drift: $('o-drift'), status: $('o-status'),
+    mint: $('o-mint'), burn: $('o-burn'),
+    barXmr: $('o-bar-xmr'), barZec: $('o-bar-zec'), barDash: $('o-bar-dash')
+  };
+  const log = $('sim-log');
+  let lastNav = 0;
+
+  const fmtUSD = n => '$' + n.toLocaleString(undefined, {maximumFractionDigits: 2});
+  const fmtNum = (n, d=2) => n.toLocaleString(undefined, {maximumFractionDigits: d});
+
+  function logLine(msg, cls='e') {
+    const div = document.createElement('div');
+    div.innerHTML = `<span class="t">${new Date().toLocaleTimeString()}</span> ` +
+                    `<span class="${cls}">${msg}</span>`;
+    log.prepend(div);
+    while (log.children.length > 60) log.removeChild(log.lastChild);
+  }
+
+  function read() {
+    return {
+      xmr: +$('i-xmr').value,
+      xmrP: +$('i-xmrP').value,
+      zec: +$('i-zec').value,
+      zecP: +$('i-zecP').value,
+      dash: +$('i-dash').value,
+      dashP: +$('i-dashP').value,
+      sup: +$('i-sup').value,
+      seed: +$('i-seed').value
+    };
+  }
+
+  function update() {
+    const v = read();
+    $('v-xmr').textContent = v.xmr.toFixed(2);
+    $('v-xmrP').textContent = v.xmrP.toFixed(2);
+    $('v-zec').textContent = v.zec.toFixed(2);
+    $('v-zecP').textContent = v.zecP.toFixed(2);
+    $('v-dash').textContent = v.dash.toFixed(2);
+    $('v-dashP').textContent = v.dashP.toFixed(2);
+    $('v-sup').textContent = v.sup.toLocaleString();
+    $('v-seed').textContent = v.seed.toFixed(2);
+
+    const xmrVal = v.xmr * v.xmrP;
+    const zecVal = v.zec * v.zecP;
+    const dashVal = v.dash * v.dashP;
+    const tvl = xmrVal + zecVal + dashVal;
+    const nav = v.sup > 0 ? tvl / v.sup : 0;
+
+    out.xmr.textContent = fmtUSD(xmrVal);
+    out.zec.textContent = fmtUSD(zecVal);
+    out.dash.textContent = fmtUSD(dashVal);
+    out.tvl.textContent = fmtUSD(tvl);
+    out.sup.textContent = v.sup.toLocaleString();
+    out.nav.textContent = nav > 0 ? '$' + nav.toFixed(4) : '—';
+
+    const wx = tvl > 0 ? (xmrVal / tvl) * 100 : 0;
+    const wz = tvl > 0 ? (zecVal / tvl) * 100 : 0;
+    const wd = tvl > 0 ? (dashVal / tvl) * 100 : 0;
+    out.w.textContent = `${wx.toFixed(1)} / ${wz.toFixed(1)} / ${wd.toFixed(1)}`;
+    out.barXmr.style.width = wx + '%';
+    out.barZec.style.width = wz + '%';
+    out.barDash.style.width = wd + '%';
+
+    const dx = (wx - 35) * 100;
+    const dz = (wz - 35) * 100;
+    const dd = (wd - 30) * 100;
+    const maxAbs = Math.max(Math.abs(dx), Math.abs(dz), Math.abs(dd));
+    out.drift.textContent = `${dx.toFixed(0)} / ${dz.toFixed(0)} / ${dd.toFixed(0)} bps`;
+    if (maxAbs <= 200) {
+      out.status.textContent = 'WITHIN TOLERANCE';
+      out.status.style.color = 'var(--good)';
+    } else {
+      out.status.textContent = 'OUT OF TOLERANCE';
+      out.status.style.color = 'var(--bad)';
+    }
+
+    if (nav > 0) {
+      out.mint.textContent = (1000 / nav).toFixed(4) + ' PWRP';
+      out.burn.textContent = '$' + nav.toFixed(4);
+    } else {
+      out.mint.textContent = '—';
+      out.burn.textContent = '—';
+    }
+
+    if (lastNav && Math.abs(nav - lastNav) / lastNav > 0.005) {
+      const dir = nav > lastNav ? '↑' : '↓';
+      logLine(`NAV ${dir} ${fmtUSD(lastNav)} → ${fmtUSD(nav)}`);
+    }
+    lastNav = nav;
+  }
+
+  inputs.forEach(id => $('i-' + id).addEventListener('input', update));
+  update();
+  logLine('Simulator ready. Adjust any slider to recompute NAV.', 't');
+})();
+
+/* ─────────────────────────── 3D Flow ─────────────────────────── */
+let flowInit = false;
+function initFlow() {
+  if (flowInit) return;
+  flowInit = true;
+  const canvas = document.getElementById('flow3d');
+  const wrap = canvas.parentElement;
+  const W = () => wrap.clientWidth - 32;
+  const H = 520;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0a0e18);
+  scene.fog = new THREE.Fog(0x0a0e18, 18, 42);
+
+  const camera = new THREE.PerspectiveCamera(50, W()/H, 0.1, 200);
+  camera.position.set(0, 6, 18);
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(W(), H, false);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x8899bb, 0.7));
+  const dir = new THREE.DirectionalLight(0xffffff, 0.9);
+  dir.position.set(6, 12, 8);
+  scene.add(dir);
+  const p1 = new THREE.PointLight(0x6ee7ff, 0.8, 40);
+  p1.position.set(-8, 2, 4); scene.add(p1);
+  const p2 = new THREE.PointLight(0xa78bfa, 0.7, 40);
+  p2.position.set(8, 2, -4); scene.add(p2);
+
+  // Layers (rows in Z)
+  const layerZ = { src: -8, cust: 0, chain: 8 };
+
+  // ── Layer 0: Source coins ─────────────────────────────
+  const srcGroup = new THREE.Group();
+  const coins = [
+    { sym: 'XMR', color: 0xff6600, x: -6, price: 160 },
+    { sym: 'ZEC', color: 0xf4b728, x: 0,  price: 30 },
+    { sym: 'DASH',color: 0x008ce7, x: 6,  price: 25 }
+  ];
+  const coinMeshes = [];
+  coins.forEach(c => {
+    const geo = new THREE.CylinderGeometry(1, 1, 0.28, 40);
+    const mat = new THREE.MeshStandardMaterial({
+      color: c.color, metalness: 0.85, roughness: 0.25,
+      emissive: c.color, emissiveIntensity: 0.15
+    });
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(c.x, 0, layerZ.src);
+    m.rotation.x = Math.PI / 2;
+    srcGroup.add(m);
+    coinMeshes.push(m);
+
+    // Label sprite
+    const sprite = makeLabel(c.sym, '#' + c.color.toString(16).padStart(6,'0'));
+    sprite.position.set(c.x, 1.7, layerZ.src);
+    srcGroup.add(sprite);
+  });
+  scene.add(srcGroup);
+
+  // ── Layer 1: Custodian vaults ─────────────────────────
+  const custGroup = new THREE.Group();
+  const vaultMeshes = [];
+  coins.forEach(c => {
+    const geo = new THREE.BoxGeometry(2.4, 2.4, 2.4);
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0x1a2336, metalness: 0.6, roughness: 0.4,
+      emissive: 0x0a1424, emissiveIntensity: 0.4
+    });
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(c.x, 0, layerZ.cust);
+    // Edge highlight
+    const edges = new THREE.LineSegments(
+      new THREE.EdgesGeometry(geo),
+      new THREE.LineBasicMaterial({ color: c.color, linewidth: 1 })
+    );
+    m.add(edges);
+    custGroup.add(m);
+    vaultMeshes.push(m);
+
+    const sprite = makeLabel(c.sym + ' vault', '#8b94a7', 0.55);
+    sprite.position.set(c.x, 2.1, layerZ.cust);
+    custGroup.add(sprite);
+  });
+  scene.add(custGroup);
+
+  // ── Layer 2: On-chain ─────────────────────────────────
+  const chainGroup = new THREE.Group();
+  // Attestation ring
+  const ringGeo = new THREE.TorusGeometry(3.2, 0.12, 16, 64);
+  const ringMat = new THREE.MeshStandardMaterial({
+    color: 0xa78bfa, emissive: 0xa78bfa, emissiveIntensity: 0.6,
+    metalness: 0.7, roughness: 0.3
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.set(0, 0, layerZ.chain);
+  chainGroup.add(ring);
+  const ringLabel = makeLabel('2-of-3 attestation', '#a78bfa', 0.5);
+  ringLabel.position.set(0, 3.8, layerZ.chain);
+  chainGroup.add(ringLabel);
+
+  // $PWRP core
+  const coreGeo = new THREE.IcosahedronGeometry(1.8, 1);
+  const coreMat = new THREE.MeshStandardMaterial({
+    color: 0x6ee7ff, emissive: 0x6ee7ff, emissiveIntensity: 0.7,
+    metalness: 0.9, roughness: 0.15
+  });
+  const core = new THREE.Mesh(coreGeo, coreMat);
+  core.position.set(0, 0, layerZ.chain + 0.1);
+  chainGroup.add(core);
+  const coreLabel = makeLabel('$PWRP', '#6ee7ff', 0.7);
+  coreLabel.position.set(0, 2.8, layerZ.chain + 0.1);
+  chainGroup.add(coreLabel);
+
+  // Price feeds (outer ring markers)
+  coins.forEach((c, i) => {
+    const angle = (i / coins.length) * Math.PI * 2 - Math.PI / 2;
+    const fx = Math.cos(angle) * 4.8;
+    const fy = Math.sin(angle) * 4.8;
+    const feedGeo = new THREE.SphereGeometry(0.35, 24, 24);
+    const feedMat = new THREE.MeshStandardMaterial({
+      color: c.color, emissive: c.color, emissiveIntensity: 0.8
+    });
+    const feed = new THREE.Mesh(feedGeo, feedMat);
+    feed.position.set(fx, fy, layerZ.chain);
+    chainGroup.add(feed);
+    const lbl = makeLabel(c.sym + '/USD', '#' + c.color.toString(16).padStart(6,'0'), 0.4);
+    lbl.position.set(fx, fy + 0.7, layerZ.chain);
+    chainGroup.add(lbl);
+  });
+
+  scene.add(chainGroup);
+
+  // ── Flow lines ────────────────────────────────────────
+  // Coins → vaults
+  coins.forEach(c => {
+    const points = [
+      new THREE.Vector3(c.x, 0, layerZ.src + 1.2),
+      new THREE.Vector3(c.x, 0, layerZ.cust - 1.2)
+    ];
+    scene.add(makeLine(points, c.color, 0.5));
+  });
+  // Vaults → attestation ring
+  coins.forEach(c => {
+    const points = [
+      new THREE.Vector3(c.x, 0, layerZ.cust + 1.2),
+      new THREE.Vector3(c.x * 0.3, 0, layerZ.chain - 3.2)
+    ];
+    scene.add(makeLine(points, c.color, 0.35));
+  });
+  // Feeds → core
+  coins.forEach((c, i) => {
+    const angle = (i / coins.length) * Math.PI * 2 - Math.PI / 2;
+    const fx = Math.cos(angle) * 4.8;
+    const fy = Math.sin(angle) * 4.8;
+    const points = [
+      new THREE.Vector3(fx, fy, layerZ.chain),
+      new THREE.Vector3(0, 0, layerZ.chain + 0.1)
+    ];
+    scene.add(makeLine(points, c.color, 0.3));
+  });
+
+  // ── Animated particles along the flow ─────────────────
+  const particles = [];
+  function spawnParticle(from, to, color, speed) {
+    const geo = new THREE.SphereGeometry(0.09, 12, 12);
+    const mat = new THREE.MeshBasicMaterial({ color });
+    const mesh = new THREE.Mesh(geo, mat);
+    scene.add(mesh);
+    particles.push({ mesh, from: from.clone(), to: to.clone(), t: 0, speed });
+  }
+  const flows = [];
+  coins.forEach(c => {
+    flows.push({ from: new THREE.Vector3(c.x, 0, layerZ.src + 1.2),
+                 to:   new THREE.Vector3(c.x, 0, layerZ.cust - 1.2),
+                 color: c.color, speed: 0.012 });
+    flows.push({ from: new THREE.Vector3(c.x, 0, layerZ.cust + 1.2),
+                 to:   new THREE.Vector3(c.x * 0.3, 0, layerZ.chain - 3.2),
+                 color: c.color, speed: 0.010 });
+  });
+  coins.forEach((c, i) => {
+    const angle = (i / coins.length) * Math.PI * 2 - Math.PI / 2;
+    const fx = Math.cos(angle) * 4.8;
+    const fy = Math.sin(angle) * 4.8;
+    flows.push({ from: new THREE.Vector3(fx, fy, layerZ.chain),
+                 to:   new THREE.Vector3(0, 0, layerZ.chain + 0.1),
+                 color: c.color, speed: 0.014 });
+  });
+
+  // ── Interaction ───────────────────────────────────────
+  let isDown = false, lastX = 0, lastY = 0;
+  let rotX = 0.15, rotY = 0, targetRotX = 0.15, targetRotY = 0;
+  let dist = 18;
+  canvas.addEventListener('mousedown', e => { isDown = true; lastX = e.clientX; lastY = e.clientY; });
+  canvas.addEventListener('mouseup', () => isDown = false);
+  canvas.addEventListener('mouseleave', () => isDown = false);
+  canvas.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    const dx = (e.clientX - lastX) / 200;
+    const dy = (e.clientY - lastY) / 200;
+    targetRotY += dx;
+    targetRotX = Math.max(-0.9, Math.min(0.9, targetRotX + dy));
+    lastX = e.clientX; lastY = e.clientY;
+  });
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    dist = Math.max(10, Math.min(32, dist + e.deltaY * 0.02));
+  }, { passive: false });
+  // Touch
+  canvas.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) { isDown = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; }
+  });
+  canvas.addEventListener('touchmove', e => {
+    if (!isDown || e.touches.length !== 1) return;
+    const dx = (e.touches[0].clientX - lastX) / 200;
+    const dy = (e.touches[0].clientY - lastY) / 200;
+    targetRotY += dx;
+    targetRotX = Math.max(-0.9, Math.min(0.9, targetRotX + dy));
+    lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+  });
+  canvas.addEventListener('touchend', () => isDown = false);
+
+  // Resize
+  function resize() {
+    const w = W();
+    renderer.setSize(w, H, false);
+    camera.aspect = w / H;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ── Animate ───────────────────────────────────────────
+  let t0 = performance.now();
+  function animate(now) {
+    requestAnimationFrame(animate);
+    const dt = Math.min(50, now - t0); t0 = now;
+
+    rotX += (targetRotX - rotX) * 0.08;
+    rotY += (targetRotY - rotY) * 0.08;
+
+    // Camera orbit around origin
+    const cx = Math.sin(rotY) * Math.cos(rotX) * dist;
+    const cy = Math.sin(rotX) * dist + 2;
+    const cz = Math.cos(rotY) * Math.cos(rotX) * dist;
+    camera.position.set(cx, cy, cz);
+    camera.lookAt(0, 0, 2);
+
+    // Spin core
+    core.rotation.x += dt * 0.0006;
+    core.rotation.y += dt * 0.0010;
+    core.scale.setScalar(1 + Math.sin(now * 0.002) * 0.05);
+
+    // Pulse ring
+    ring.rotation.z += dt * 0.0003;
+    ring.material.emissiveIntensity = 0.45 + Math.sin(now * 0.003) * 0.25;
+
+    // Bob coins
+    coinMeshes.forEach((m, i) => {
+      m.rotation.z += dt * 0.0008;
+      m.position.y = Math.sin(now * 0.001 + i) * 0.15;
+    });
+
+    // Spawn particles
+    if (Math.random() < 0.35) {
+      const f = flows[Math.floor(Math.random() * flows.length)];
+      spawnParticle(f.from, f.to, f.color, f.speed);
+    }
+    // Update particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.t += p.speed;
+      if (p.t >= 1) {
+        scene.remove(p.mesh);
+        p.mesh.geometry.dispose();
+        p.mesh.material.dispose();
+        particles.splice(i, 1);
+        continue;
+      }
+      p.mesh.position.lerpVectors(p.from, p.to, p.t);
+      p.mesh.material.opacity = 1 - Math.abs(p.t - 0.5) * 1.2;
+      p.mesh.material.transparent = true;
+    }
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(animate);
+}
+
+/* ── helpers ─────────────────────────────────────────── */
+function makeLine(points, color, opacity) {
+  const geo = new THREE.BufferGeometry().setFromPoints(points);
+  const mat = new THREE.LineBasicMaterial({
+    color, transparent: true, opacity
+  });
+  return new THREE.Line(geo, mat);
+}
+
+function makeLabel(text, color, scale = 0.6) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 512; canvas.height = 128;
+  ctx.font = 'bold 56px ui-sans-serif, system-ui, sans-serif';
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, 256, 64);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(4 * scale * 2, 1 * scale * 2, 1);
+  return sprite;
+}
+</script>
+</body>
+</html>
