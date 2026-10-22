@@ -17,8 +17,9 @@
     --warn: #fbbf24;
     --bad: #f87171;
     --xmr: #ff6600;
-    --zec: #f4b728;
     --dash: #008ce7;
+    --zec: #f4b728;
+    --zano: #ff4d4d;
     --line: #232a3a;
   }
   * { box-sizing: border-box; }
@@ -39,6 +40,14 @@
   ul, ol { margin: 8px 0 8px 22px; padding: 0; }
   li { margin: 3px 0; }
   .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px; }
+  
+  /* Header Nav */
+  .top-nav { display: flex; justify-content: flex-end; align-items: center; padding: 16px 20px; background: #0f1320; border-bottom: 1px solid var(--line); }
+  .top-nav a { color: var(--ink); text-decoration: none; margin-left: 24px; font-weight: 600; font-size: 14px; transition: color 0.2s; }
+  .top-nav a:hover { color: var(--accent); }
+  .top-nav .btn-presale { color: #0b0d12; background: var(--accent); padding: 8px 16px; border-radius: 6px; margin-left: 24px; }
+  .top-nav .btn-presale:hover { background: #fff; color: #0b0d12; }
+
   .hero { padding: 32px 24px; background: linear-gradient(135deg, #141a2a 0%, #0e1220 100%);
     border: 1px solid var(--line); border-radius: 16px; margin-bottom: 24px; }
   .hero .badge { display: inline-block; background: rgba(110,231,255,0.12);
@@ -62,9 +71,9 @@
   .chip { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px;
     font-weight: 600; }
   .chip-xmr { background: rgba(255,102,0,0.15); color: var(--xmr); }
-  .chip-zec { background: rgba(244,183,40,0.15); color: var(--zec); }
   .chip-dash{ background: rgba(0,140,231,0.15); color: var(--dash); }
-  .chip-pwrp{ background: rgba(110,231,255,0.15); color: var(--accent); }
+  .chip-zec { background: rgba(244,183,40,0.15); color: var(--zec); }
+  .chip-zano{ background: rgba(255,77,77,0.15); color: var(--zano); }
   .nav-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line);
     margin: 24px 0 20px; overflow-x: auto; }
   .nav-tabs button { background: transparent; color: var(--muted); border: none;
@@ -90,8 +99,6 @@
   .bar { height: 8px; background: #1e2536; border-radius: 4px; overflow: hidden;
     display: flex; margin-top: 4px; }
   .bar span { display: block; height: 100%; }
-  .tag { font-size: 11px; background: #1e2536; color: var(--muted); padding: 2px 6px;
-    border-radius: 4px; margin-left: 4px; }
   .note { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3);
     border-radius: 8px; padding: 12px; font-size: 14px; color: #fde68a; }
   .ok { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.3);
@@ -110,6 +117,13 @@
 </style>
 </head>
 <body>
+
+<!-- TOP NAVIGATION -->
+<div class="top-nav">
+  <a href="index.html" style="color:var(--accent)">Overview</a>
+  <a href="presale.html" class="btn-presale">Join $PWRP Presale Waitlist</a>
+</div>
+
 <div class="wrap">
 
   <!-- HERO -->
@@ -117,12 +131,13 @@
     <span class="badge">DESIGN DOCUMENT · INTERACTIVE</span>
     <h1>$PWRP — Privacy Basket Wrapper Token</h1>
     <p>A 15,000,000-max-supply ERC-20 that wraps a weighted basket of
-      <span class="chip chip-xmr">XMR 35%</span>
-      <span class="chip chip-zec">ZEC 35%</span>
-      <span class="chip chip-dash">DASH 30%</span>
+      <span class="chip chip-xmr">XMR 50%</span>
+      <span class="chip chip-dash">DASH 20%</span>
+      <span class="chip chip-zec">ZEC 15%</span>
+      <span class="chip chip-zano">ZANO 15%</span>
       held in custodied reserves, with NAV-anchored minting, a FIFO redemption queue,
       bounded rebalancing, 2-of-3 attestation, a sanctions gate, and a 48h timelock.
-      Price is derived from three Chainlink USD feeds, not from a DEX pool.
+      Price is derived from Chainlink USD feeds, not from a DEX pool.
     </p>
   </div>
 
@@ -149,21 +164,22 @@
       </div>
       <div class="card">
         <div class="label">Target Weights</div>
-        <div class="metric">35 / 35 / 30</div>
+        <div class="metric">50 / 20 / 15 / 15</div>
         <div class="bar">
-          <span style="width:35%;background:var(--xmr)"></span>
-          <span style="width:35%;background:var(--zec)"></span>
-          <span style="width:30%;background:var(--dash)"></span>
+          <span style="width:50%;background:var(--xmr)"></span>
+          <span style="width:20%;background:var(--dash)"></span>
+          <span style="width:15%;background:var(--zec)"></span>
+          <span style="width:15%;background:var(--zano)"></span>
         </div>
         <div style="color:var(--muted);font-size:12px;margin-top:6px">
-          XMR · ZEC · DASH, tolerance ±200 bps
+          XMR · DASH · ZEC · ZANO, tolerance ±200 bps
         </div>
       </div>
       <div class="card">
         <div class="label">Pricing</div>
         <div class="metric">NAV = TVL / Supply</div>
         <div style="color:var(--muted);font-size:13px">
-          No DEX pool is the price. NAV is computed on-chain from three
+          No DEX pool is the price. NAV is computed on-chain from four
           Chainlink USD feeds × reported reserves.
         </div>
       </div>
@@ -175,7 +191,7 @@
         <h3>It <em>is</em></h3>
         <ul>
           <li>An ERC-20 with a <strong>hard 15M cap</strong>.</li>
-          <li>A claim on a <strong>custodied basket</strong> of native XMR/ZEC/DASH.</li>
+          <li>A claim on a <strong>custodied basket</strong> of native XMR/DASH/ZEC/ZANO.</li>
           <li>Priced by <strong>on-chain NAV</strong> from Chainlink feeds.</li>
           <li>Mint/burn gated by <strong>2-of-3 signed reserve reports</strong>.</li>
           <li>Upgradeable only through a <strong>48h timelock</strong>.</li>
@@ -185,7 +201,7 @@
       <div class="card">
         <h3>It is <em>not</em></h3>
         <ul>
-          <li>Trustless. No cryptographic bridge exists from Monero/Zcash/Dash to EVM.</li>
+          <li>Trustless. No cryptographic bridge exists from Monero/Dash/Zcash/Zano to EVM.</li>
           <li>Private. Holding PWRP is fully transparent on-chain.</li>
           <li>Free-floating. The price cannot be pumped by a thin DEX pool —
             it is NAV-anchored, but NAV itself depends on trusted reserves.</li>
@@ -198,7 +214,7 @@
     <h2>Four trust pillars</h2>
     <table>
       <tr><th>Pillar</th><th>Mechanism</th><th>Failure mode if broken</th></tr>
-      <tr><td>Custody</td><td>Off-chain vaults holding XMR/ZEC/DASH</td>
+      <tr><td>Custody</td><td>Off-chain vaults holding XMR/DASH/ZEC/ZANO</td>
           <td>Reserves ≠ reported → NAV overstates → mint is theft</td></tr>
       <tr><td>Attestation</td><td>2-of-3 EIP-712 signatures (custodian + auditor)</td>
           <td>Collusion of 2 keys → fake reserves accepted</td></tr>
@@ -221,7 +237,7 @@
       <div class="card">
         <div class="label">Layer 0 · Source coins</div>
         <div style="font-size:13px;color:var(--muted)">
-          Native XMR, ZEC, DASH live on their own chains. They <em>cannot</em> be read by Ethereum.
+          Native XMR, DASH, ZEC, and ZANO live on their own chains. They <em>cannot</em> be read by Ethereum.
         </div>
       </div>
       <div class="card">
@@ -259,14 +275,6 @@
             <input type="range" id="i-xmrP" min="20" max="800" step="1" value="160" />
           </div>
           <div class="slider">
-            <label><span>ZEC reserve</span><span id="v-zec">100.00</span></label>
-            <input type="range" id="i-zec" min="0" max="500" step="1" value="100" />
-          </div>
-          <div class="slider">
-            <label><span>ZEC price (USD)</span><span id="v-zecP">30.00</span></label>
-            <input type="range" id="i-zecP" min="5" max="300" step="1" value="30" />
-          </div>
-          <div class="slider">
             <label><span>DASH reserve</span><span id="v-dash">90.00</span></label>
             <input type="range" id="i-dash" min="0" max="500" step="1" value="90" />
           </div>
@@ -275,12 +283,28 @@
             <input type="range" id="i-dashP" min="5" max="200" step="1" value="25" />
           </div>
           <div class="slider">
-            <label><span>PWRP supply</span><span id="v-sup">141.67</span></label>
-            <input type="range" id="i-sup" min="1" max="15000000" step="1" value="141" />
+            <label><span>ZEC reserve</span><span id="v-zec">100.00</span></label>
+            <input type="range" id="i-zec" min="0" max="500" step="1" value="100" />
           </div>
           <div class="slider">
-            <label><span>Initial NAV (seed)</span><span id="v-seed">150.00</span></label>
-            <input type="range" id="i-seed" min="10" max="500" step="1" value="150" />
+            <label><span>ZEC price (USD)</span><span id="v-zecP">30.00</span></label>
+            <input type="range" id="i-zecP" min="5" max="300" step="1" value="30" />
+          </div>
+          <div class="slider">
+            <label><span>ZANO reserve</span><span id="v-zano">100.00</span></label>
+            <input type="range" id="i-zano" min="0" max="500" step="1" value="100" />
+          </div>
+          <div class="slider">
+            <label><span>ZANO price (USD)</span><span id="v-zanoP">2.50</span></label>
+            <input type="range" id="i-zanoP" min="0.1" max="50" step="0.1" value="2.5" />
+          </div>
+          <div class="slider">
+            <label><span>PWRP supply</span><span id="v-sup">189.83</span></label>
+            <input type="range" id="i-sup" min="1" max="15000000" step="1" value="190" />
+          </div>
+          <div class="slider">
+            <label><span>Initial NAV (seed)</span><span id="v-seed">100.00</span></label>
+            <input type="range" id="i-seed" min="10" max="500" step="1" value="100" />
           </div>
         </div>
       </div>
@@ -288,20 +312,22 @@
         <h3>Live output</h3>
         <div class="sim-output">
           <div><span class="key">XMR value</span><span class="val" id="o-xmr">$0</span></div>
-          <div><span class="key">ZEC value</span><span class="val" id="o-zec">$0</span></div>
           <div><span class="key">DASH value</span><span class="val" id="o-dash">$0</span></div>
+          <div><span class="key">ZEC value</span><span class="val" id="o-zec">$0</span></div>
+          <div><span class="key">ZANO value</span><span class="val" id="o-zano">$0</span></div>
           <div style="border-top:1px solid var(--line);margin-top:6px;padding-top:6px">
             <span class="key">Total basket value</span><span class="val" id="o-tvl">$0</span>
           </div>
           <div><span class="key">On-chain supply</span><span class="val" id="o-sup">0</span></div>
           <div><span class="key">NAV per PWRP</span><span class="val big" id="o-nav">$0</span></div>
-          <div><span class="key">Actual weights</span><span class="val" id="o-w">— / — / —</span></div>
+          <div><span class="key">Actual weights</span><span class="val" id="o-w">— / — / — / —</span></div>
           <div class="bar" id="o-bar" style="margin-top:6px">
             <span id="o-bar-xmr" style="background:var(--xmr)"></span>
-            <span id="o-bar-zec" style="background:var(--zec)"></span>
             <span id="o-bar-dash" style="background:var(--dash)"></span>
+            <span id="o-bar-zec" style="background:var(--zec)"></span>
+            <span id="o-bar-zano" style="background:var(--zano)"></span>
           </div>
-          <div><span class="key">Drift vs 35/35/30</span><span class="val" id="o-drift">—</span></div>
+          <div><span class="key">Drift vs 50/20/15/15</span><span class="val" id="o-drift">—</span></div>
           <div><span class="key">Drift status</span><span class="val" id="o-status">—</span></div>
         </div>
         <div style="margin-top:12px">
@@ -329,14 +355,15 @@
     <h2>How Chainlink feeds price $PWRP</h2>
     <p style="color:var(--muted)">
       $PWRP has no DEX pool as its source of truth. Its price is the on-chain NAV,
-      and NAV is computed from three Chainlink USD feeds multiplied by reported reserves.
+      and NAV is computed from four Chainlink USD feeds multiplied by reported reserves.
     </p>
     <div class="card">
       <h3>Price pipeline</h3>
 <pre>
   Chainlink XMR/USD  ─┐
+  Chainlink DASH/USD ─┤
   Chainlink ZEC/USD  ─┼──▶  reserve_i × price_i  ──▶  totalBasketValue()  ──▶  NAV = TVL / supply
-  Chainlink DASH/USD ─┘
+  Chainlink ZANO/USD ─┘
                                                   ▲
                                                   │
                                    reportReserveAttested(symbol, reserve)
@@ -365,9 +392,10 @@
         <h3>What changes the price?</h3>
         <table>
           <tr><th>Event</th><th>Effect on NAV</th></tr>
-          <tr><td>XMR price ↑</td><td>NAV ↑ (weighted 35%)</td></tr>
-          <tr><td>ZEC price ↑</td><td>NAV ↑ (weighted 35%)</td></tr>
-          <tr><td>DASH price ↑</td><td>NAV ↑ (weighted 30%)</td></tr>
+          <tr><td>XMR price ↑</td><td>NAV ↑ (weighted 50%)</td></tr>
+          <tr><td>DASH price ↑</td><td>NAV ↑ (weighted 20%)</td></tr>
+          <tr><td>ZEC price ↑</td><td>NAV ↑ (weighted 15%)</td></tr>
+          <tr><td>ZANO price ↑</td><td>NAV ↑ (weighted 15%)</td></tr>
           <tr><td>New deposit minted at NAV</td><td>NAV ≈ unchanged</td></tr>
           <tr><td>Burn at NAV</td><td>NAV ≈ unchanged</td></tr>
           <tr><td>Rebalance within tolerance</td><td>NAV ≈ unchanged (±slippage)</td></tr>
@@ -379,27 +407,25 @@
     <h2>What happens on a price move — worked example</h2>
     <div class="card">
 <pre>
-Initial state:
+Initial state (approximate to fit 50/20/15/15 targets):
   XMR reserve = 100   XMR price = $160   → $16,000
-  ZEC reserve = 100   ZEC price = $30    → $3,000
-  DASH reserve = 90   DASH price = $25   → $2,250
-  Total basket value = $21,250
-  Supply = 141.666... PWRP
-  NAV = 21,250 / 141.666... = $150.00
+  DASH reserve = 200  DASH price = $25   → $5,000
+  ZEC reserve = 133   ZEC price = $30    → $3,990
+  ZANO reserve = 2400 ZANO price = $2.50 → $6,000
+  Total basket value = $30,990
+  Supply = 309.9 PWRP
+  NAV = 30,990 / 309.9 = $100.00
 
 XMR rallies to $200 (+25%):
   XMR value = 100 × 200 = $20,000
-  Total basket value = $25,250
-  NAV = 25,250 / 141.666... = $178.24   (+18.8%)
-  Actual weights now 79.2% / 11.9% / 8.9%
-  → drift from 35/35/30 = +44.2 / -23.1 / -21.1 bps → OUT OF TOLERANCE
+  Total basket value = $34,990
+  NAV = 34,990 / 309.9 = $112.90   (+12.9%)
+  Actual weights now 57.1% / 14.2% / 11.4% / 17.1%
+  → drift from 50/20/15/15 = +710 / -580 / -360 / +210 bps → OUT OF TOLERANCE
   → rebalance required within cooldown window
 
-Custodian sells ~28 XMR for ZEC + DASH (off-chain):
-  XMR = 72, ZEC = 200, DASH = 180
-  XMR value = $14,400, ZEC = $6,000, DASH = $4,500 → total $24,900
-  Weights = 57.8% / 24.1% / 18.1%  → still off target
-  (Deeper rebalance needed; illustrative only.)
+Custodian sells ~28 XMR for DASH, ZEC, and ZANO (off-chain):
+  (Deeper rebalance needed to restore 50/20/15/15; illustrative only.)
 </pre>
     </div>
   </div>
@@ -516,14 +542,14 @@ function tokensForValue(uint256 depositValue, uint256 nav)
 
     <h3>Phase A — Bootstrap (one-time)</h3>
 <pre>1. Custodian deposits seed basket off-chain:
-     100 XMR + 100 ZEC + 90 DASH
+     100 XMR + 200 DASH + 133 ZEC + 2400 ZANO
 2. Custodian + auditor co-sign reserve reports (2-of-3)
 3. Custodian calls reportReservesAttested([...])
-4. With XMR=$160, ZEC=$30, DASH=$25:
-     basketValue = $21,250
-5. seedMint(alice, "seed-1") with INITIAL_NAV = $150:
-     tokens = 21,250 / 150 = 141.666... PWRP
-6. seeded = true. NAV locked at $150.00.</pre>
+4. With XMR=$160, DASH=$25, ZEC=$30, ZANO=$2.50:
+     basketValue = $30,990
+5. seedMint(alice, "seed-1") with INITIAL_NAV = $100:
+     tokens = 30,990 / 100 = 309.9 PWRP
+6. seeded = true. NAV locked at $100.00.</pre>
 
     <h3>Phase B — Minting</h3>
 <pre>1. Depositor sends 50 XMR off-chain ($8,000)
@@ -593,7 +619,7 @@ function tokensForValue(uint256 depositValue, uint256 nav)
 
     <h2 style="margin-top:24px">The irreducible caveat</h2>
     <div class="note">
-      No module removes the custody assumption. Monero, Zcash, and Dash are on
+      No module removes the custody assumption. Monero, Dash, Zcash, and Zano are on
       their own chains; an EVM contract cannot see them. The strongest claim this
       design can make is: <em>two independent entities must collude, and a 48h public
       window must be ignored by every holder, for a theft to succeed.</em>
@@ -602,7 +628,7 @@ function tokensForValue(uint256 depositValue, uint256 nav)
   </div>
 
   <div class="footer">
-    $PWRP design doc · 15M cap · 35/35/30 · NAV-anchored · 2-of-3 attested ·
+    $PWRP design doc · 15M cap · 50/20/15/15 · NAV-anchored · 2-of-3 attested ·
     48h timelock · 3D flow + simulator
   </div>
 </div>
@@ -627,13 +653,13 @@ function tokensForValue(uint256 depositValue, uint256 nav)
 /* ─────────────────────────── Simulator ─────────────────────────── */
 (function() {
   const $ = id => document.getElementById(id);
-  const inputs = ['xmr','xmrP','zec','zecP','dash','dashP','sup','seed'];
+  const inputs = ['xmr','xmrP','dash','dashP','zec','zecP','zano','zanoP','sup','seed'];
   const out = {
-    xmr: $('o-xmr'), zec: $('o-zec'), dash: $('o-dash'),
+    xmr: $('o-xmr'), dash: $('o-dash'), zec: $('o-zec'), zano: $('o-zano'),
     tvl: $('o-tvl'), sup: $('o-sup'), nav: $('o-nav'),
     w: $('o-w'), drift: $('o-drift'), status: $('o-status'),
     mint: $('o-mint'), burn: $('o-burn'),
-    barXmr: $('o-bar-xmr'), barZec: $('o-bar-zec'), barDash: $('o-bar-dash')
+    barXmr: $('o-bar-xmr'), barDash: $('o-bar-dash'), barZec: $('o-bar-zec'), barZano: $('o-bar-zano')
   };
   const log = $('sim-log');
   let lastNav = 0;
@@ -653,10 +679,12 @@ function tokensForValue(uint256 depositValue, uint256 nav)
     return {
       xmr: +$('i-xmr').value,
       xmrP: +$('i-xmrP').value,
-      zec: +$('i-zec').value,
-      zecP: +$('i-zecP').value,
       dash: +$('i-dash').value,
       dashP: +$('i-dashP').value,
+      zec: +$('i-zec').value,
+      zecP: +$('i-zecP').value,
+      zano: +$('i-zano').value,
+      zanoP: +$('i-zanoP').value,
       sup: +$('i-sup').value,
       seed: +$('i-seed').value
     };
@@ -666,39 +694,46 @@ function tokensForValue(uint256 depositValue, uint256 nav)
     const v = read();
     $('v-xmr').textContent = v.xmr.toFixed(2);
     $('v-xmrP').textContent = v.xmrP.toFixed(2);
-    $('v-zec').textContent = v.zec.toFixed(2);
-    $('v-zecP').textContent = v.zecP.toFixed(2);
     $('v-dash').textContent = v.dash.toFixed(2);
     $('v-dashP').textContent = v.dashP.toFixed(2);
+    $('v-zec').textContent = v.zec.toFixed(2);
+    $('v-zecP').textContent = v.zecP.toFixed(2);
+    $('v-zano').textContent = v.zano.toFixed(2);
+    $('v-zanoP').textContent = v.zanoP.toFixed(2);
     $('v-sup').textContent = v.sup.toLocaleString();
     $('v-seed').textContent = v.seed.toFixed(2);
 
     const xmrVal = v.xmr * v.xmrP;
-    const zecVal = v.zec * v.zecP;
     const dashVal = v.dash * v.dashP;
-    const tvl = xmrVal + zecVal + dashVal;
+    const zecVal = v.zec * v.zecP;
+    const zanoVal = v.zano * v.zanoP;
+    const tvl = xmrVal + dashVal + zecVal + zanoVal;
     const nav = v.sup > 0 ? tvl / v.sup : 0;
 
     out.xmr.textContent = fmtUSD(xmrVal);
-    out.zec.textContent = fmtUSD(zecVal);
     out.dash.textContent = fmtUSD(dashVal);
+    out.zec.textContent = fmtUSD(zecVal);
+    out.zano.textContent = fmtUSD(zanoVal);
     out.tvl.textContent = fmtUSD(tvl);
     out.sup.textContent = v.sup.toLocaleString();
     out.nav.textContent = nav > 0 ? '$' + nav.toFixed(4) : '—';
 
     const wx = tvl > 0 ? (xmrVal / tvl) * 100 : 0;
-    const wz = tvl > 0 ? (zecVal / tvl) * 100 : 0;
     const wd = tvl > 0 ? (dashVal / tvl) * 100 : 0;
-    out.w.textContent = `${wx.toFixed(1)} / ${wz.toFixed(1)} / ${wd.toFixed(1)}`;
+    const wz = tvl > 0 ? (zecVal / tvl) * 100 : 0;
+    const wn = tvl > 0 ? (zanoVal / tvl) * 100 : 0;
+    out.w.textContent = `${wx.toFixed(1)} / ${wd.toFixed(1)} / ${wz.toFixed(1)} / ${wn.toFixed(1)}`;
     out.barXmr.style.width = wx + '%';
-    out.barZec.style.width = wz + '%';
     out.barDash.style.width = wd + '%';
+    out.barZec.style.width = wz + '%';
+    out.barZano.style.width = wn + '%';
 
-    const dx = (wx - 35) * 100;
-    const dz = (wz - 35) * 100;
-    const dd = (wd - 30) * 100;
-    const maxAbs = Math.max(Math.abs(dx), Math.abs(dz), Math.abs(dd));
-    out.drift.textContent = `${dx.toFixed(0)} / ${dz.toFixed(0)} / ${dd.toFixed(0)} bps`;
+    const dx = (wx - 50) * 100;
+    const dd = (wd - 20) * 100;
+    const dz = (wz - 15) * 100;
+    const dn = (wn - 15) * 100;
+    const maxAbs = Math.max(Math.abs(dx), Math.abs(dd), Math.abs(dz), Math.abs(dn));
+    out.drift.textContent = `${dx.toFixed(0)} / ${dd.toFixed(0)} / ${dz.toFixed(0)} / ${dn.toFixed(0)} bps`;
     if (maxAbs <= 200) {
       out.status.textContent = 'WITHIN TOLERANCE';
       out.status.style.color = 'var(--good)';
@@ -765,9 +800,10 @@ function initFlow() {
   // ── Layer 0: Source coins ─────────────────────────────
   const srcGroup = new THREE.Group();
   const coins = [
-    { sym: 'XMR', color: 0xff6600, x: -6, price: 160 },
-    { sym: 'ZEC', color: 0xf4b728, x: 0,  price: 30 },
-    { sym: 'DASH',color: 0x008ce7, x: 6,  price: 25 }
+    { sym: 'XMR', color: 0xff6600, x: -6.5, price: 160 },
+    { sym: 'DASH',color: 0x008ce7, x: -2.2, price: 25 },
+    { sym: 'ZEC', color: 0xf4b728, x: 2.2,  price: 30 },
+    { sym: 'ZANO',color: 0xff4d4d, x: 6.5,  price: 2.50 }
   ];
   const coinMeshes = [];
   coins.forEach(c => {
@@ -921,7 +957,7 @@ function initFlow() {
   // ── Interaction ───────────────────────────────────────
   let isDown = false, lastX = 0, lastY = 0;
   let rotX = 0.15, rotY = 0, targetRotX = 0.15, targetRotY = 0;
-  let dist = 18;
+  let dist = 20;
   canvas.addEventListener('mousedown', e => { isDown = true; lastX = e.clientX; lastY = e.clientY; });
   canvas.addEventListener('mouseup', () => isDown = false);
   canvas.addEventListener('mouseleave', () => isDown = false);

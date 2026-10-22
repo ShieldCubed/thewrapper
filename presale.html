@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$PWRP Presale Waitlist | Privacy Basket Wrapper</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #131722;
+    --panel2: #1a1f2e;
+    --ink: #e8ecf3;
+    --muted: #8b94a7;
+    --accent: #6ee7ff;
+    --accent2: #a78bfa;
+    --good: #34d399;
+    --warn: #fbbf24;
+    --bad: #f87171;
+    --xmr: #ff6600;
+    --dash: #008ce7;
+    --zec: #f4b728;
+    --zano: #ff4d4d;
+    --line: #232a3a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55; }
+  a { color: var(--accent); }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  h1, h2, h3, h4 { font-weight: 650; letter-spacing: -0.01em; }
+  h1 { font-size: 28px; margin: 0 0 6px; }
+  h2 { font-size: 20px; margin: 28px 0 10px; color: var(--accent); }
+  h3 { font-size: 16px; margin: 18px 0 8px; }
+  h4 { font-size: 14px; margin: 12px 0 6px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 22px; padding: 0; }
+  li { margin: 3px 0; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  /* Header Nav */
+  .top-nav { display: flex; justify-content: flex-end; align-items: center; padding: 16px 20px; background: #0f1320; border-bottom: 1px solid var(--line); }
+  .top-nav a { color: var(--ink); text-decoration: none; margin-left: 24px; font-weight: 600; font-size: 14px; transition: color 0.2s; }
+  .top-nav a:hover { color: var(--accent); }
+  .top-nav .btn-presale { color: #0b0d12; background: var(--accent); padding: 8px 16px; border-radius: 6px; margin-left: 24px; }
+  .top-nav .btn-presale:hover { background: #fff; color: #0b0d12; }
+  .top-nav .btn-active { color: var(--accent); }
+
+  .hero { padding: 40px 28px; background: linear-gradient(135deg, #141a2a 0%, #0e1220 100%);
+    border: 1px solid var(--line); border-radius: 16px; margin-bottom: 28px; text-align: center; }
+  .hero .badge { display: inline-block; background: rgba(110,231,255,0.12);
+    color: var(--accent); border: 1px solid rgba(110,231,255,0.35);
+    padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.04em; margin-bottom: 14px; }
+  .hero p { color: var(--muted); max-width: 620px; margin: 12px auto 0; }
+  .hero h1 { font-size: 32px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 720px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px; }
+  .card h3 { margin-top: 0; }
+  .card .metric { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .card .label { font-size: 12px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; }
+
+  .chip { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px;
+    font-weight: 600; }
+  .chip-xmr { background: rgba(255,102,0,0.15); color: var(--xmr); }
+  .chip-dash{ background: rgba(0,140,231,0.15); color: var(--dash); }
+  .chip-zec { background: rgba(244,183,40,0.15); color: var(--zec); }
+  .chip-zano{ background: rgba(255,77,77,0.15); color: var(--zano); }
+
+  .bar { height: 10px; background: #1e2536; border-radius: 5px; overflow: hidden;
+    display: flex; margin: 10px 0 6px; }
+  .bar span { display: block; height: 100%; }
+
+  .note { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 8px; padding: 14px; font-size: 14px; color: #fde68a; margin: 16px 0; }
+  .ok { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.3);
+    border-radius: 8px; padding: 14px; font-size: 14px; color: #a7f3d0; margin: 16px 0; }
+
+  /* Form */
+  .form-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    padding: 28px; margin-top: 8px; }
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px;
+    font-weight: 600; letter-spacing: 0.03em; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; color: var(--ink); font-size: 15px; font-family: inherit;
+    transition: border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--accent); }
+  .form-group textarea { min-height: 90px; resize: vertical; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+
+  .btn-submit { width: 100%; background: var(--accent); color: #0b0d12; border: none;
+    border-radius: 8px; padding: 14px 20px; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 6px; }
+  .btn-submit:hover { background: #fff; }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .success-msg { display: none; text-align: center; padding: 24px; }
+  .success-msg h3 { color: var(--good); margin-bottom: 8px; }
+  .success-msg.visible { display: block; }
+  .form-fields.hidden { display: none; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.05em; }
+
+  .footer { color: var(--muted); font-size: 13px; text-align: center; margin-top: 48px; }
+  .steps { counter-reset: step; list-style: none; margin: 0; padding: 0; }
+  .steps li { counter-increment: step; position: relative; padding-left: 42px; margin-bottom: 16px; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: 0;
+    width: 28px; height: 28px; background: rgba(110,231,255,0.15); color: var(--accent);
+    border: 1px solid rgba(110,231,255,0.35); border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<div class="top-nav">
+  <a href="index.html">Overview</a>
+  <a href="presale.html" class="btn-presale btn-active">Join $PWRP Presale Waitlist</a>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="badge">PRESALE WAITLIST · EARLY ACCESS</span>
+    <h1>Join the $PWRP Presale Waitlist</h1>
+    <p>
+      Be first in line for the Privacy Basket Wrapper token —
+      a 15M-capped ERC-20 backed by a custodied basket of
+      <span class="chip chip-xmr">XMR 50%</span>
+      <span class="chip chip-dash">DASH 20%</span>
+      <span class="chip chip-zec">ZEC 15%</span>
+      <span class="chip chip-zano">ZANO 15%</span>
+      and priced by on-chain NAV from Chainlink feeds.
+    </p>
+  </div>
+
+  <!-- KEY METRICS -->
+  <div class="grid3">
+    <div class="card">
+      <div class="label">Max Supply</div>
+      <div class="metric">15,000,000</div>
+      <div style="color:var(--muted);font-size:13px;margin-top:4px">Hard-capped ERC-20</div>
+    </div>
+    <div class="card">
+      <div class="label">Target Allocation</div>
+      <div class="metric">50 / 20 / 15 / 15</div>
+      <div class="bar">
+        <span style="width:50%;background:var(--xmr)"></span>
+        <span style="width:20%;background:var(--dash)"></span>
+        <span style="width:15%;background:var(--zec)"></span>
+        <span style="width:15%;background:var(--zano)"></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="label">Pricing Model</div>
+      <div class="metric">NAV-Anchored</div>
+      <div style="color:var(--muted);font-size:13px;margin-top:4px">Chainlink × attested reserves</div>
+    </div>
+  </div>
+
+  <!-- WHY JOIN -->
+  <h2>Why join the waitlist?</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Early allocation priority</h3>
+      <p style="color:var(--muted);font-size:14px;margin:0">
+        Waitlist members receive priority access when the presale opens.
+        Allocation windows will be announced first to this list.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Transparent design first</h3>
+      <p style="color:var(--muted);font-size:14px;margin:0">
+        Full design doc, 3D value-flow, live NAV simulator, and contract inventory
+        are already public. No black-box tokenomics.
+      </p>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <h2>How the presale will work</h2>
+  <div class="card">
+    <ol class="steps">
+      <li>
+        <strong>Join the waitlist</strong> — submit your email and preferred contact
+        (and optionally a wallet for future airdrop / allocation tracking).
+      </li>
+      <li>
+        <strong>Receive the invite</strong> — when the presale window opens you get
+        a private link with allocation details and accepted payment assets.
+      </li>
+      <li>
+        <strong>Contribute &amp; receive PWRP</strong> — deposit supported assets;
+        custodian mints PWRP at the then-current NAV (or at the announced seed NAV
+        for the initial tranche).
+      </li>
+      <li>
+        <strong>Track NAV on-chain</strong> — after launch, price is purely
+        <code>TVL / supply</code> from Chainlink feeds × 2-of-3 attested reserves.
+      </li>
+    </ol>
+  </div>
+
+  <!-- WAITLIST FORM -->
+  <h2>Join the waitlist</h2>
+  <div class="form-card">
+    <div class="form-fields" id="form-fields">
+      <form id="waitlist-form" onsubmit="return handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email address *</label>
+            <input type="email" id="email" name="email" required placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="telegram">Telegram / X handle (optional)</label>
+            <input type="text" id="telegram" name="telegram" placeholder="@username" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="wallet">EVM wallet for allocation tracking (optional)</label>
+          <input type="text" id="wallet" name="wallet" placeholder="0x…" spellcheck="false" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="interest">Intended contribution range (USD)</label>
+            <select id="interest" name="interest">
+              <option value="">Prefer not to say</option>
+              <option value="under-1k">&lt; $1,000</option>
+              <option value="1k-5k">$1,000 – $5,000</option>
+              <option value="5k-25k">$5,000 – $25,000</option>
+              <option value="25k-plus">$25,000+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="source">How did you hear about $PWRP?</label>
+            <select id="source" name="source">
+              <option value="">Select…</option>
+              <option value="x">X / Twitter</option>
+              <option value="telegram">Telegram</option>
+              <option value="discord">Discord</option>
+              <option value="friend">Friend / referral</option>
+              <option value="search">Search / other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="notes">Anything else? (optional)</label>
+          <textarea id="notes" name="notes" placeholder="Questions, preferred payment assets, etc."></textarea>
+        </div>
+        <button type="submit" class="btn-submit" id="submit-btn">Join Waitlist</button>
+      </form>
+      <p style="color:var(--muted);font-size:12px;margin:14px 0 0;text-align:center">
+        No spam. We only contact you about the $PWRP presale and launch.
+        By joining you acknowledge this is a design-stage project and not an offer of securities.
+      </p>
+    </div>
+    <div class="success-msg" id="success-msg">
+      <h3>✓ You're on the list</h3>
+      <p style="color:var(--muted)">
+        Thanks for joining. We'll reach out when the presale window opens.
+        In the meantime, explore the full design doc and interactive simulator.
+      </p>
+      <p style="margin-top:16px">
+        <a href="index.html" style="font-weight:600">← Back to Overview</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- QUICK FACTS -->
+  <h2>Quick facts</h2>
+  <div class="card">
+    <table>
+      <tr><th>Item</th><th>Detail</th></tr>
+      <tr><td>Token</td><td>$PWRP — Privacy Basket Wrapper</td></tr>
+      <tr><td>Standard</td><td>ERC-20, 18 decimals, hard 15,000,000 max supply</td></tr>
+      <tr><td>Basket</td><td>XMR 50% · DASH 20% · ZEC 15% · ZANO 15% (±200 bps)</td></tr>
+      <tr><td>Price source</td><td>On-chain NAV = Σ(reserve × Chainlink USD) / supply</td></tr>
+      <tr><td>Attestation</td><td>2-of-3 EIP-712 reserve reports (custodian + auditor)</td></tr>
+      <tr><td>Upgrade path</td><td>48h timelock, 4-of-5 multisig</td></tr>
+      <tr><td>Emergency</td><td>3-of-5 pauser can halt mint / burn / settle instantly</td></tr>
+      <tr><td>Design status</td><td>Public interactive design doc live; contracts in development</td></tr>
+    </table>
+  </div>
+
+  <div class="note">
+    <strong>Important:</strong> This is a waitlist for a future presale of a design-stage
+    token. Nothing on this page constitutes an offer to sell or a solicitation to buy
+    securities or any financial instrument. Privacy-coin wrappers face regulatory
+    uncertainty in many jurisdictions. Participate only if you understand the custody,
+    attestation, and oracle risks described in the design document.
+  </div>
+
+  <div class="ok">
+    Full technical design, 3D value-flow visualization, and live NAV simulator are available
+    on the <a href="index.html">Overview page</a>.
+  </div>
+
+  <div class="footer">
+    $PWRP design · 15M cap · 50/20/15/15 · NAV-anchored · 2-of-3 attested · 48h timelock
+  </div>
+</div>
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  // Client-side only waitlist capture for now.
+  // Replace with a real endpoint (Formspree, Getform, your backend, etc.) when ready.
+  const data = {
+    email: document.getElementById('email').value.trim(),
+    telegram: document.getElementById('telegram').value.trim(),
+    wallet: document.getElementById('wallet').value.trim(),
+    interest: document.getElementById('interest').value,
+    source: document.getElementById('source').value,
+    notes: document.getElementById('notes').value.trim(),
+    ts: new Date().toISOString(),
+    page: 'presale-waitlist'
+  };
+
+  try {
+    const existing = JSON.parse(localStorage.getItem('pwrp_waitlist') || '[]');
+    existing.push(data);
+    localStorage.setItem('pwrp_waitlist', JSON.stringify(existing));
+  } catch (_) { /* ignore storage errors */ }
+
+  // Simulate network delay then show success
+  setTimeout(() => {
+    document.getElementById('form-fields').classList.add('hidden');
+    document.getElementById('success-msg').classList.add('visible');
+  }, 600);
+
+  return false;
+}
+</script>
+</body>
+</html>
